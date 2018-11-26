@@ -6,16 +6,8 @@ import (
 	"os"
 )
 
-type Cmd struct {
-	helpFlag    bool
-	versionFlag bool
-	cpOption    string
-	XjreOption  string
-	class       string
-	args        []string
-}
-
 func parseCmd() *Cmd {
+	fmt.Println("begin")
 	cmd := &Cmd{}
 
 	flag.Usage = printUsage
