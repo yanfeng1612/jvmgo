@@ -7,7 +7,6 @@ import (
 )
 
 func parseCmd() *Cmd {
-	fmt.Println("begin")
 	cmd := &Cmd{}
 
 	flag.Usage = printUsage

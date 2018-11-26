@@ -6,19 +6,19 @@ import (
 	"jvmgo/classfile"
 	"jvmgo/classpath"
 	"jvmgo/rtda"
-	"os"
+	// "os"
 	"strings"
 )
 
 func main() {
-	cmd := parseCmd1()
+	cmd := parseCmd()
 
 	if cmd.versionFlag {
 		fmt.Println("version 0.0.1")
 	} else if cmd.helpFlag || cmd.class == "" {
 		printUsage()
 	} else {
-		// startJVM(cmd)
+		startJVM(cmd)
 	}
 }
 
@@ -28,12 +28,18 @@ func startJVM(cmd *Cmd) {
 	className := strings.Replace(cmd.class, ".", "/", -1)
 	cf := loadClass(className, cp)
 	printClassInfo(cf)
-	// classData, _, err := cp.ReadClass(className)
-	// if err != nil {
-	// 	fmt.Printf("Could not find or load main class %s\n", cmd.class)
-	// 	return
-	// }
-	// fmt.Printf("class data : %v\n", classData)
+	classData, _, err := cp.ReadClass(className)
+	if err != nil {
+		fmt.Printf("Could not find or load main class %s\n", cmd.class)
+		return
+	}
+	fmt.Printf("class data : %v\n", classData)
+	mainMethod := getMainMethod(cf)
+	if mainMethod != nil {
+
+	} else {
+		fmt.Println("can not find main method")
+	}
 }
 
 func loadClass(className string, cp *classpath.Classpath) *classfile.ClassFile {
@@ -46,6 +52,15 @@ func loadClass(className string, cp *classpath.Classpath) *classfile.ClassFile {
 		panic(err)
 	}
 	return cf
+}
+
+func getMainMethod(cf *classfile.ClassFile) *classfile.MemberInfo {
+	for _, m := range cf.Methods() {
+		if m.Name() == "main" && m.Descriptor() == "([Ljava/lang/String;)V" {
+			return m
+		}
+	}
+	return nil
 }
 
 func printClassInfo(cf *classfile.ClassFile) {
@@ -90,10 +105,6 @@ func parseCmd1() *Cmd {
 	}
 
 	return cmd
-}
-
-func printUsage() {
-	fmt.Printf("Usage : %s [-option] class [args...] \n", os.Args[0])
 }
 
 type Cmd struct {
