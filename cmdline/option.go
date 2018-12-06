@@ -11,7 +11,11 @@ type Options struct {
 	verboseClass bool
 	Xss          int
 	Xcpuprofile  string
-	XuseJavaHome string
+	XuseJavaHome bool
+}
+
+func (this *Options) VerboseClass() bool {
+	return this.verboseClass
 }
 
 func parseOptions(argReader *ArgReader) *Options {
@@ -28,7 +32,7 @@ func parseOptions(argReader *ArgReader) *Options {
 		case "-Xcpuprofile":
 			option.Xcpuprofile = argReader.removeFirst()
 		case "-XuseJavaHome":
-			option.XuseJavaHome = argReader.removeFirst()
+			option.XuseJavaHome = true
 		}
 	}
 	return option

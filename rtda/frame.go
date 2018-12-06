@@ -4,10 +4,13 @@ type Frame struct {
 	lower        *Frame
 	localVars    LocalVars
 	operantStack *OperandStack
+	thread       *Thread
+	nextPC       int
 }
 
-func newFrame(maxLocals uint, maxStack uint) *Frame {
+func newFrame(thread *Thread, maxLocals uint, maxStack uint) *Frame {
 	return &Frame{
+		thread:       thread,
 		localVars:    newLocalVars(maxLocals),
 		operantStack: newOperandStack(maxStack),
 	}

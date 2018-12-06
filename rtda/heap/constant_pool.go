@@ -43,8 +43,8 @@ func (self *ConstantPool) GetConstant(index uint) Constant {
 
 func newConstantPoll(class *Class, cfCp classfile.ConstantPool) *ConstantPool {
 	cpCount := len(cfCp)
-	consts = make([]Constant, cpCount)
-	rtCp = &ConstantPool{class, consts}
+	consts := make([]Constant, cpCount)
+	rtCp := &ConstantPool{class, consts}
 	for i := 1; i < cpCount; i++ {
 		cpInfo := cfCp[i]
 		switch cpInfo.(type) {
@@ -65,6 +65,18 @@ func newConstantPoll(class *Class, cfCp classfile.ConstantPool) *ConstantPool {
 		case *classfile.ConstantStringInfo:
 			stringInfo := cpInfo.(*classfile.ConstantStringInfo)
 			consts[i] = stringInfo.String()
+		case *classfile.ConstantClassInfo:
+			classInfo := cpInfo.(*classfile.ConstantClassInfo)
+			consts[i] = newClassRef(rtCp, classInfo)
+		case *classfile.ConstantFieldrefInfo:
+			fieldInfo := cpInfo.(*classfile.ConstantFieldrefInfo)
+			consts[i] = newFieldRef(rtCp, fieldInfo)
+		case *classfile.ConstantMethodrefInfo:
+			methodInfo := cpInfo.(*classfile.ConstantMethodrefInfo)
+			consts[i] = newMethodInfoRef(rtCp, methodInfo)
+		case *classfile.ConstantInterfaceMethodrefInfo:
+			interfaceMethodInfo := cpInfo.(*classfile.ConstantInterfaceMethodrefInfo)
+			consts[i] = newInterfaceMethodInfoRef(rtCp, interfaceMethodInfo)
 		}
 	}
 	return rtCp

@@ -1,5 +1,9 @@
 package heap
 
+import (
+	"jvmgo/classfile"
+)
+
 type Method struct {
 	ClassMember
 	maxStack  uint
